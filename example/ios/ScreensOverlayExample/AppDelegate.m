@@ -36,15 +36,6 @@ static void InitializeFlipper(UIApplication *application) {
 
 @implementation RNWindow
 
-- (UIView *) hitTest:(CGPoint)point withEvent:(UIEvent *)event
-{
-    UIView *hitTestResult = [super hitTest:point withEvent:event];
-    if ([hitTestResult isKindOfClass:[ReactNativeScreensOverlay class]]) {
-      return nil;
-    }
-    return hitTestResult;
-}
-
 - (void)didAddSubview:(UIView *)subview
 {
   if (![subview isKindOfClass:[RNViewContainer class]]) {

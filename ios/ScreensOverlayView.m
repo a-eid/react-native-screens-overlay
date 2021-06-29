@@ -21,11 +21,20 @@
 
 @implementation ReactNativeScreensOverlay {
   __weak RCTBridge *_bridge;
-  UIPanGestureRecognizer *_gestureRecognizer;
   RNViewContainer *_container;
   CGRect _reactFrame;
   RCTTouchHandler *_touchHandler;
 }
+
+- (UIView *) hitTest:(CGPoint)point withEvent:(UIEvent *)event
+{
+    UIView *hitTestResult = [super hitTest:point withEvent:event];
+    if ([hitTestResult isKindOfClass:[ReactNativeScreensOverlay class]]) {
+      return nil;
+    }
+    return hitTestResult;
+}
+
 
 - (instancetype)initWithBridge:(RCTBridge *)bridge
 {
@@ -33,34 +42,14 @@
     _bridge = bridge;
     _reactFrame = CGRectNull;
     _container = self.container;
+
+    UIWindow *window = RCTSharedApplication().delegate.window;
+    [window addSubview:_container];
   }
 
   return self;
 }
 
-- (void)setShown:(BOOL)shown
-{
-  if (_shown != shown) {
-    _shown = shown;
-    if (_shown) {
-      [self show];
-    } else {
-      [self hide];
-    }
-  }
-}
-
-- (void)setDraggable:(BOOL)draggable
-{
-  if (_draggable != draggable) {
-    _draggable = draggable;
-    if (_draggable) {
-      [_container addGestureRecognizer:self.gestureRecognizer];
-    } else {
-      [_container removeGestureRecognizer:self.gestureRecognizer];
-    }
-  }
-}
 
 - (void)reactSetFrame:(CGRect)frame
 {
@@ -73,14 +62,6 @@
   [_container addSubview:view];
 }
 
-- (UIPanGestureRecognizer *)gestureRecognizer
-{
-  if (!_gestureRecognizer) {
-    _gestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(gesture:)];
-  }
-
-  return _gestureRecognizer;
-}
 
 - (RNViewContainer *)container
 {
@@ -91,32 +72,11 @@
   return _container;
 }
 
-- (void)show
-{
-  UIWindow *window = RCTSharedApplication().delegate.window;
-  [window addSubview:_container];
-}
 
-- (void)hide
-{
-  if (!_container) {
-    return;
-  }
-
-  [_container removeFromSuperview];
-}
-
-- (void)gesture:(UIPanGestureRecognizer *)gestureRecognizer
-{
-  CGPoint translation = [gestureRecognizer translationInView:_container.superview];
-  _container.center = CGPointMake(_container.center.x + translation.x, _container.center.y + translation.y);
-  [gestureRecognizer setTranslation:CGPointMake(0, 0) inView:_container.superview];
-}
 
 - (void)didMoveToWindow
 {
   if (self.window == nil) {
-    [self hide];
     [_touchHandler detachFromView:_container];
   } else {
     if (_touchHandler == nil) {
@@ -128,7 +88,6 @@
 
 - (void)invalidate
 {
-  [self hide];
   _container = nil;
 }
 
@@ -142,8 +101,5 @@ RCT_EXPORT_MODULE()
 {
   return [[ReactNativeScreensOverlay alloc] initWithBridge:self.bridge];
 }
-
-RCT_EXPORT_VIEW_PROPERTY(shown, BOOL)
-RCT_EXPORT_VIEW_PROPERTY(draggable, BOOL)
 
 @end

@@ -10,6 +10,4 @@
 
 
 @interface ReactNativeScreensOverlay : RCTView
-@property (nonatomic) BOOL shown;
-@property (nonatomic) BOOL draggable;
 @end
