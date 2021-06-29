@@ -10,6 +10,8 @@
 #import <React/RCTBridge.h>
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
+#import <react-native-screens-overlay/ScreensOverlayView.h>
+
 
 #ifdef FB_SONARKIT_ENABLED
 #import <FlipperKit/FlipperClient.h>
@@ -29,6 +31,33 @@ static void InitializeFlipper(UIApplication *application) {
 }
 #endif
 
+@interface RNWindow : UIWindow
+@end
+
+@implementation RNWindow
+
+- (UIView *) hitTest:(CGPoint)point withEvent:(UIEvent *)event
+{
+    UIView *hitTestResult = [super hitTest:point withEvent:event];
+    if ([hitTestResult isKindOfClass:[RNWindow class]]) {
+      return nil;
+    }
+    return hitTestResult;
+}
+
+- (void)didAddSubview:(UIView *)subview
+{
+  if (![subview isKindOfClass:[RNViewContainer class]]) {
+    for (UIView *view in self.subviews) {
+      if ([view isKindOfClass:[RNViewContainer class]]) {
+        [self bringSubviewToFront:view];
+      }
+    }
+  }
+}
+
+@end
+
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
@@ -43,7 +72,7 @@ static void InitializeFlipper(UIApplication *application) {
 
   rootView.backgroundColor = [[UIColor alloc] initWithRed:1.0f green:1.0f blue:1.0f alpha:1];
 
-  self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+  self.window = [[RNWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
   UIViewController *rootViewController = [UIViewController new];
   rootViewController.view = rootView;
   self.window.rootViewController = rootViewController;

@@ -1,12 +1,13 @@
-import { requireNativeComponent, ViewStyle } from 'react-native';
+import { Platform, requireNativeComponent, View } from 'react-native';
 
-type ScreensOverlayProps = {
-  color: string;
-  style: ViewStyle;
+type WindowViewProps = {
+  shown: boolean;
+  draggable: boolean;
 };
 
-export const ScreensOverlayViewManager = requireNativeComponent<ScreensOverlayProps>(
-'ScreensOverlayView'
-);
+export const RNScreensOverlay =
+  Platform.OS === 'ios'
+    ? requireNativeComponent<WindowViewProps>('ReactNativeScreensOverlay')
+    : View;
 
-export default ScreensOverlayViewManager;
+export default RNScreensOverlay;
