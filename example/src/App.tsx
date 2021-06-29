@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import RNScreensOverlay from 'react-native-screens-overlay';
 
@@ -8,16 +8,31 @@ export default function App() {
     console.log(RNScreensOverlay);
   }, []);
   return (
-    <View style={styles.container}>
-      <RNScreensOverlay shown draggable style={StyleSheet.absoluteFillObject}>
-        <View style={{ backgroundColor: 'red', width: 100, height: 100 }} />
+    <>
+      <View style={{ flex: 1 }}>
+        <TouchableOpacity style={{ flex: 1, backgroundColor: 'green' }} />
+      </View>
+      <RNScreensOverlay
+        shown
+        draggable={false}
+        style={StyleSheet.absoluteFillObject}
+      >
+        <TouchableOpacity
+          style={{
+            backgroundColor: 'red',
+            width: 100,
+            height: 100,
+            margin: 100,
+          }}
+        />
       </RNScreensOverlay>
-    </View>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    backgroundColor: 'blue',
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
