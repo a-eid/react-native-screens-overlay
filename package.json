@@ -1,6 +1,6 @@
 {
   "name": "react-native-screens-overlay",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "overlay component for react native screens native stack. ",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
