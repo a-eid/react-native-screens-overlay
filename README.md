@@ -8,6 +8,36 @@ overlay component for react native screens native stack.
 yarn add https://github.com/a-eid/react-native-screens-overlay#main
 ```
 
+in you `appDelegate.m`  add the following code.
+
+```objc
+#import <react-native-screens-overlay/ScreensOverlayView.h>
+
+@interface RNWindow : UIWindow
+@end
+
+@implementation RNWindow
+
+- (void)didAddSubview:(UIView *)subview
+{
+  if (![subview isKindOfClass:[RNViewContainer class]]) {
+    for (UIView *view in self.subviews) {
+      if ([view isKindOfClass:[RNViewContainer class]]) {
+        [self bringSubviewToFront:view];
+      }
+    }
+  }
+}
+
+@end
+
+// inside didFinishLaunchingWithOptions replace this line
+self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+
+// with this
+self.window = [[RNWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+```
+
 ## Usage
 
 ```js
